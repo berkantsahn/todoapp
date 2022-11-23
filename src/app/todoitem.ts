@@ -20,5 +20,5 @@
 //interface'nin bir constructor'i olmaz. Oluşturulacak objelerin şemaları interface içinde belirtilir.
 export interface TodoItem {
     description:string;
-    action:string;
+    action:boolean;
 }

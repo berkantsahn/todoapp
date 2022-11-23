@@ -12,9 +12,9 @@ export class Model{
     constructor(){
         this.name = "Berkant";
         this.items = [
-            { description: "Kahvaltı", action: "Yapıldı" },
-            { description: "Spor", action: "Yapıldı" },
-            { description: "Yemek", action: "Yapılmadı" }
+            { description: "Kahvaltı", action: true},
+            { description: "Spor", action: true },
+            { description: "Yemek", action: false}
         ];
     }
 }

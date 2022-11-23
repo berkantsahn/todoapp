@@ -9,9 +9,11 @@ import { TodoItem } from '../todoitem';
 })
 export class TodoComponent {
   
+  displayAll:boolean = true;
+
   constructor(){}
   
-  message:string = "";
+  message:string = "Merhaba";
   //private name:string = "Berkant"
 
   // items:any = [
@@ -38,7 +40,13 @@ export class TodoComponent {
   model = new Model();
 
   getItems(){
-    return this.model.items;
+    if(this.displayAll){
+      return this.model.items;
+    }
+    else{
+      return this.model.items.filter(item => item.action === false);
+    }
+    
   }
 
   getListName(){
@@ -53,7 +61,7 @@ export class TodoComponent {
   //modele veri göndermek için aşağıdaki gibi bir fonksiyon oluşturduk
   addItem(value:string){
     if(value != ""){
-      this.model.items.push({description: value, action: "Yapılmadı"});
+      this.model.items.push({description: value, action: false});
     }
     else {
       alert("Bir todo bilgisi giriniz.");

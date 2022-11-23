@@ -19,7 +19,8 @@
             {{ message }}
 
             <div class="form-check mb-3">
-                <input type="text" type="checkbox" class="form-check-input" name="" id="displayAll"/>
+                <!-- ngModel kullanabilmek için app.module.ts içerisinde FormsModule'yi imports altına eklememiz gerekmektedir -->
+                <input type="checkbox" [(ngModel)]="displayAll" class="form-check-input" name="" id="displayAll"/>
                 <label for="displayAll" class="form-check-label">Hepsini Göster</label>
             </div>
 
@@ -37,9 +38,16 @@
                         <td>{{i+1}}</td>
                         <td>{{item.description}}</td>
                         <td>{{item.action}}</td>
+                        <td>
+                            <!-- bu inputla beraber item içinden gelen action verilerini true-false yapma imkanına sahip oluyoruz -->
+                            <!-- ngModel tanımlandığında herhangi bir request-response işlemine ihtiyaç duyulmadan inputta istenilen bir değişim yapılabilir 
+                            ngModel inputları izler ve eş zamanlı olarak inputlarla beraber değişir  -->
+                            <input type="checkbox" [(ngModel)]="item.action" name="" id="">
+                        </td>
                     </tr>
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>
