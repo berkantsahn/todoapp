@@ -32,18 +32,18 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 Bu proje [Angular CLI](https://github.com/angular/angular-cli) version 15.0.0. ile geliştirilmiştir.
 
-##Development Server
+## Development Server
 
 Development server için "ng serve" komutunu çalıştırın. "http://localhost:4200/" adresine gidin. Eğer kaynak dosyalardan herhangi birini değiştirirseniz uygulama otomatik olarak yeniden yüklenir.
 
-##Code scaffolding
+## Code scaffolding
 
 Yeni bir component oluşturmak için `ng generate component component-name` komutunu çalıştırın. Bunun yerine `ng generate directive|pipe|service|class|guard|interface|enum|module` komutunu da kullanabilirsiniz.
 
-##Build
+## Build
 
 Projeyi build etmek için `ng build` komutunu çalıştırın. Build artifacts `dist/` içerisinde saklanacaktır.
 
-##Further help
+## Further help
 
 Angular CLI hakkında daha fazla yardım almak için `ng help` komutunu kullanabilirsiniz veya [Angular CLI Overview and Command Reference](https://angular.io/cli) sayfasını inceleyebilirsiniz.
