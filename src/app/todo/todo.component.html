@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="row">
+        <div class="col-5 mx-auto">
+            <h3 class="bg-primary text-white p-3">
+                <!-- ismi yazdırmak için todo.component.ts içerisindeki getListName() isimli fonksiyonu burada çağırıyoruz -->
+                {{ getListName() }} todo list
+            </h3>
+
+            <div class="input-group mb-3">
+                <!-- enter tuşuna basıldığında addItem fonksiyonunun kullanılması için keyup.enter eventini kullanıyoruz -->
+                <!-- blur eventini kullanırsak yazılan inputtan farklı bir yere tıklandığında içerisine tanımlanan işlem gerçekleşir -->
+                <!-- örneğin; <input #txtItem type="text" class="form-control" (blur)="addItem(txtItem.value)"/> -->
+                <input #txtItem type="text" class="form-control" (keyup.enter)="addItem(txtItem.value); txtItem.value = ''"/>
+                <!-- Buton içerisinde, click eventinde, txtItem isimli inputun değerini(value) todo.components.ts içerisindeki addItem isimli fonksiyona gönderdik
+                ardından txtItem'in içerisindeki değeri temizledik -->
+                <button class="btn btn-outline-primary" (click)="addItem(txtItem.value); txtItem.value=''">Ekle</button>
+            </div>
+
+            {{ message }}
+
+            <div class="form-check mb-3">
+                <input type="text" type="checkbox" class="form-check-input" name="" id="displayAll"/>
+                <label for="displayAll" class="form-check-label">Hepsini Göster</label>
+            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Açıklama</th>
+                        <th>Aksiyon</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--itemleri çekmek için *ngFor direktifini kullanarak, todo.component.ts içerisindeki getItems() fonksiyonundan verileri çekiyoruz -->
+                    <tr *ngFor="let item of getItems(); let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.description}}</td>
+                        <td>{{item.action}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
