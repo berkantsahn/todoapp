@@ -11,9 +11,13 @@ export class TodoComponent {
   
   displayAll:boolean = true;
 
-  constructor(){}
+  constructor(){
+    //eğer localStorage içerisinde bir bilgi varsa bu başlangıçta model içerisine gönderilir
+    this.model.items = this.getItemsFromLS();
+  }
   
-  message:string = "Merhaba";
+  message:string = "";
+  inputText:string = "";
   //private name:string = "Berkant"
 
   // items:any = [
@@ -59,12 +63,57 @@ export class TodoComponent {
   // }
 
   //modele veri göndermek için aşağıdaki gibi bir fonksiyon oluşturduk
-  addItem(value:string){
-    if(value != ""){
-      this.model.items.push({description: value, action: false});
+  addItem(){
+    if(this.inputText != ""){
+      let data = {description: this.inputText, action: false};
+      this.model.items.push(data);
+
+      //bir dizi oluşturarak içerisine data bilgilerini ekliyoruz
+      //eğer bir dizi oluşturmadan localStorage içerisine gönderme yapsaydık sadece en son gönderilen veriyi saklayabilecektik
+      //let items = [];
+      //burada getItemsFromLS fonksiyonundan gelen bilgiyi items isimli objeye gönderdik
+      let items = this.getItemsFromLS();
+      items.push(data);
+      //oluşturduğumuz items objesi localStorage içerisine gönderildi. LocalStorage içerisine gönderilen bilgi JSON türünde string olmalıdır.
+      localStorage.setItem("items", JSON.stringify(items));
+      this.inputText = "";
     }
     else {
       alert("Bir todo bilgisi giriniz.");
     }   
+  }
+
+  displayCount(){
+    return this.model.items.filter(i => i.action).length;
+  }
+
+  getBtnClasses() {
+    return {'disabled': this.inputText.length == 0, 'btn-secondary': this.inputText.length == 0, 'btn-primary': this.inputText.length > 0}
+  }
+
+  getItemsFromLS(){
+    //todoItem türünde bir dizi tanımladık
+    let items: TodoItem[] = [];
+    //localStorage'den gelen bilgisi value değişkeni içerisine aldık
+    let value = localStorage.getItem("items");
+    //eğer value değişkeni null değilse items objesi içerisine JSON'a dönüştürülmüş value değerini gönderdik
+    if(value != null){
+      items = JSON.parse(value);
+    }
+    return items;
+  }
+
+  onActionChanged(item: TodoItem){
+    let items = this.getItemsFromLS();
+    localStorage.clear();
+
+    //foreach ile birlikte getItemsFromLS'den gelen bilgileri tek tek geziyoruz. Description bilgileri karşılaştırarak eğer eleman ile item içerisindeki
+    //değer uyuşuyorsa action işlemini item'den almasını sağlıyoruz
+    items.forEach(i => {
+      if(i.description == item.description) {
+        i.action = item.action;
+      }
+    });
+    localStorage.setItem("items", JSON.stringify(items));
   }
 }

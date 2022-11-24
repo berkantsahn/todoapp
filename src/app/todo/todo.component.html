@@ -10,10 +10,12 @@
                 <!-- enter tuşuna basıldığında addItem fonksiyonunun kullanılması için keyup.enter eventini kullanıyoruz -->
                 <!-- blur eventini kullanırsak yazılan inputtan farklı bir yere tıklandığında içerisine tanımlanan işlem gerçekleşir -->
                 <!-- örneğin; <input #txtItem type="text" class="form-control" (blur)="addItem(txtItem.value)"/> -->
-                <input #txtItem type="text" class="form-control" (keyup.enter)="addItem(txtItem.value); txtItem.value = ''"/>
-                <!-- Buton içerisinde, click eventinde, txtItem isimli inputun değerini(value) todo.components.ts içerisindeki addItem isimli fonksiyona gönderdik
-                ardından txtItem'in içerisindeki değeri temizledik -->
-                <button class="btn btn-outline-primary" (click)="addItem(txtItem.value); txtItem.value=''">Ekle</button>
+                <!-- ngModel ile birlikte ts içerisinde bulunan inputText değişkenine inputa girilen değeri gönderiyoruz -->
+                <input type="text" class="form-control" (keyup.enter)="addItem();" [(ngModel)]="inputText"/>
+                <!-- Buton içerisinde, click eventinde, inputun değerini(value) todo.components.ts içerisindeki addItem isimli fonksiyona gönderdik -->
+                <button class="btn" (click)="addItem();" [class]="getBtnClasses()">
+                    Ekle
+                </button>
             </div>
 
             {{ message }}
@@ -24,30 +26,70 @@
                 <label for="displayAll" class="form-check-label">Hepsini Göster</label>
             </div>
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Açıklama</th>
-                        <th>Aksiyon</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!--itemleri çekmek için *ngFor direktifini kullanarak, todo.component.ts içerisindeki getItems() fonksiyonundan verileri çekiyoruz -->
-                    <tr *ngFor="let item of getItems(); let i = index;">
-                        <td>{{i+1}}</td>
-                        <td>{{item.description}}</td>
-                        <td>{{item.action}}</td>
-                        <td>
-                            <!-- bu inputla beraber item içinden gelen action verilerini true-false yapma imkanına sahip oluyoruz -->
-                            <!-- ngModel tanımlandığında herhangi bir request-response işlemine ihtiyaç duyulmadan inputta istenilen bir değişim yapılabilir 
-                            ngModel inputları izler ve eş zamanlı olarak inputlarla beraber değişir  -->
-                            <input type="checkbox" [(ngModel)]="item.action" name="" id="">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="my-2">
+                {{ displayCount() }} adet görev tamamlandı.
+            </div>
 
+            <div class="alert alert-warning" *ngIf="getItems().length == 0 else itemsTable">
+                Listede eleman yok.
+            </div>
+
+            <ng-template #itemsTable>
+                <!-- ngIf komutu burada ilgili nesnenin gösterilip/gösterilmemesi konusunda koşul vermemizi sağlar -->
+                <table class="table table-bordered" *ngIf="getItems().length > 0">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Açıklama</th>
+                            <th>Aksiyon</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--itemleri çekmek için *ngFor direktifini kullanarak, todo.component.ts içerisindeki getItems() fonksiyonundan verileri çekiyoruz -->
+                        <tr *ngFor="let item of getItems(); let i = index;" [class.bg-success]="item.action" [class.bg-warning]="!item.action">
+                            <!-- yukarıdaki tr içinde bulunan class tanımlamaları için [class] = "{ 'bg-primary': item.action, 'bg-warning': !item.action }" 
+                                bir alternatif olarak kullanılabilir. Bu atamada action'dan dönen değere göre eğer true ise success, false ise warning bölümü çalışır -->
+                            <td>{{i+1}}</td>
+                            <td>{{item.description}}</td>
+                            <td>
+                                <!-- Klasik bir if karar yapısı kullanarak dönen true-false değerine göre çıktı işlemini gerçekleştiriyoruz-->
+                                <!-- <div *ngIf="item.action">Yapıldı</div>
+                                <div *ngIf="!item.action">Yapılmadı</div> -->
+
+                                <!-- ngIf yerine ngSwitch kullanarak yukarıdaki işlemi yapabiliriz -->
+                                <div [ngSwitch]="item.action">
+                                    <div *ngSwitchCase="true">Yapıldı</div>
+                                    <div *ngSwitchCase="false">Yapılmadı</div>
+                                </div>
+
+                                <!-- yukarıdaki gibi if veya switch yapıları kullanmak yerine alttaki gibi bir if else bloğu kullanabiliriz -->
+                                <!-- <div *ngIf="item.action else noTemplate">
+                                    Yapıldı
+                                </div>
+                                <ng-template #noTemplate>
+                                    Yapılmadı    
+                                </ng-template> -->
+
+                                <!-- burada ise item.action özelliği true olanların gösterilmemesi false olanların gösterilmesini sağlayacak bir if then yapısı oluşturabiliriz -->
+                                <!-- <div *ngIf="item.action then noTemplate">
+                                    Burası gösterilmeyecek
+                                </div>
+                                <ng-template #noTemplate>
+                                    Yapılmadı
+                                </ng-template> -->
+                            </td>
+                            <td>
+                                <!-- bu inputla beraber item içinden gelen action verilerini true-false yapma imkanına sahip oluyoruz -->
+                                <!-- ngModel tanımlandığında herhangi bir request-response işlemine ihtiyaç duyulmadan inputta istenilen bir değişim yapılabilir 
+                                ngModel inputları izler ve eş zamanlı olarak inputlarla beraber değişir  -->
+                                <!-- inputta bir değişiklik olduğunda localStorage içerisinde de bu değişikliğin olması için change özelliğinde onActionChanged isimli fonksiyonu
+                                çalıştırdık ve içerisine item bilgisini gönderdik -->
+                                <input type="checkbox" (change) = "onActionChanged(item)" [(ngModel)]="item.action" name="" id="">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
         </div>
     </div>
 </div>
